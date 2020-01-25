@@ -22,14 +22,37 @@ defmodule MnemoTest do
     assert generate(256) |> String.split(" ") |> length == 24
   end
 
-  for i <- 1..100 do
-    test "proptest: entropy/1 (attempt #{i})" do
-      mnemonic =
-        [128, 160, 192, 224, 256] 
-        |> Enum.random()
-        |> generate()
+  describe "Entropy" do
+    for i <- 1..100 do
+      test "proptest: entropy/1 (attempt #{i})" do
+        mnemonic =
+          [128, 160, 192, 224, 256] 
+          |> Enum.random()
+          |> generate()
 
-      assert ^mnemonic = mnemonic |> entropy() |> mnemonic()
+        assert ^mnemonic = mnemonic |> entropy() |> mnemonic()
+      end
+    end
+
+    test "Invalid number of words mnemonic" do
+      assert_raise RuntimeError, ~r"Number of words", fn ->
+        entropy("about about about")
+      end
+    end
+
+    test "Invalid mnemonic (checksum mismatch)" do
+      assert_raise RuntimeError, ~r"checksum mismatch", fn ->
+        1..24
+        |> Enum.map(fn _ -> "about" end)
+        |> Enum.join(" ")
+        |> entropy()
+      end
+    end
+
+    test "Valid mnemonic" do
+      mnemonic = "about depth island gap total vital feed sand shuffle type nominee space endless high lonely motion problem project insect gentle hurdle web scene dad"
+
+      assert entropy(mnemonic)
     end
   end
 

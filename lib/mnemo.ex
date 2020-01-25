@@ -27,8 +27,20 @@ defmodule Mnemo do
 
     sentence = for(word <- words, do: <<word_index(word)::size(11)>>, into: "")
     divider_index = floor(bit_size(sentence) / 33) * 32
-    <<entropy::size(divider_index), _checksum::bitstring>> = sentence
-    <<entropy::size(divider_index)>>
+    <<entropy::size(divider_index), checksum::bitstring>> = sentence
+
+    ent = <<entropy::size(divider_index)>>
+    cs = decode_integer(checksum)
+
+    case checksum(ent) do
+      {^cs, _} ->
+        ent
+
+      {other, _} ->
+        raise "Invalid mnemonic (checksum mismatch): #{inspect(mnemonic)}. Got #{other}, expected: #{
+                cs
+              }"
+    end
   end
 
   def maybe_decode(ent) do
@@ -38,7 +50,7 @@ defmodule Mnemo do
         {:ok, decoded} -> decoded
       end
 
-    bit_size(ent) in @valid_strenghts || raise "ENT must be #{@valid_strenghts} bits"
+    bit_size(ent) in @valid_strenghts || raise "ENT must be #{inspect(@valid_strenghts)} bits"
     ent
   end
 
