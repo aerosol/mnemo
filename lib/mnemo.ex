@@ -1,5 +1,8 @@
 defmodule Mnemo do
-  def generate(strength \\ 128) when strength in [128, 160, 192, 224, 256] do
+  @valid_strenghts [128, 160, 192, 224, 256]
+  @valid_mnemonic_word_count [12, 15, 18, 21, 24]
+
+  def generate(strength \\ 128) when strength in @valid_strenghts do
     strength
     |> div(8)
     |> :crypto.strong_rand_bytes()
@@ -8,23 +11,36 @@ defmodule Mnemo do
 
   def mnemonic(entropy) do
     entropy
-    |> decode()
-    |> assert_size()
+    |> maybe_decode()
     |> update_with_checksum()
     |> sentence()
     |> Enum.map(&word/1)
     |> Enum.join(" ")
   end
 
-  def decode(ent) do
-    case Base.decode16(ent, case: :mixed) do
-      :error -> ent
-      {:ok, decoded} -> decoded
+  def entropy(mnemonic) do
+    words = String.split(mnemonic)
+
+    if length(words) not in @valid_mnemonic_word_count do
+      raise "Number of words must be one of the following: [12, 15, 18, 21, 24]"
     end
+
+    sentence = for(word <- words, do: <<word_index(word)::size(11)>>, into: "")
+    divider_index = floor(bit_size(sentence) / 33) * 32
+    <<entropy::size(divider_index), _checksum::bitstring>> = sentence
+    <<entropy::size(divider_index)>>
   end
 
-  def assert_size(ent) when bit_size(ent) >= 128 and bit_size(ent) <= 256, do: ent
-  def assert_size(_ent), do: raise("ENT must be 128-256 bits")
+  def maybe_decode(ent) do
+    ent =
+      case Base.decode16(ent, case: :mixed) do
+        :error -> ent
+        {:ok, decoded} -> decoded
+      end
+
+    bit_size(ent) in @valid_strenghts || raise "ENT must be #{@valid_strenghts} bits"
+    ent
+  end
 
   def update_with_checksum(ent) do
     {checksum, checksum_size} = checksum(ent)
@@ -44,13 +60,26 @@ defmodule Mnemo do
   end
 
   def word(i, lang \\ :english) when i in 0..2047 do
-    "priv/#{lang}.txt"
-    |> File.stream!()
-    |> Stream.with_index()
+    lang
+    |> wordlist_stream()
     |> Stream.filter(fn {_value, index} -> index == i end)
     |> Enum.at(0)
     |> elem(0)
     |> String.trim()
+  end
+
+  def word_index(word, lang \\ :english) when is_binary(word) do
+    lang
+    |> wordlist_stream()
+    |> Stream.filter(fn {value, _index} -> String.trim(value) == word end)
+    |> Enum.at(0)
+    |> elem(1)
+  end
+
+  defp wordlist_stream(lang) do
+    "priv/#{lang}.txt"
+    |> File.stream!()
+    |> Stream.with_index()
   end
 
   def checksum(ent) do

@@ -22,10 +22,26 @@ defmodule MnemoTest do
     assert generate(256) |> String.split(" ") |> length == 24
   end
 
+  for i <- 1..100 do
+    test "proptest: entropy/1 (attempt #{i})" do
+      mnemonic =
+        [128, 160, 192, 224, 256] 
+        |> Enum.random()
+        |> generate()
+
+      assert ^mnemonic = mnemonic |> entropy() |> mnemonic()
+    end
+  end
+
   describe "Words" do
     test "English words can be retrieved by index" do
       assert word(0) == "abandon"
       assert word(2047) == "zoo"
+    end
+
+    test "Index can be retrieved by English word" do
+      assert word_index("abandon") == 0
+      assert word_index("zoo") == 2047
     end
   end
 
@@ -57,7 +73,6 @@ defmodule MnemoTest do
 
     defp assert_cs(ent, cs), do: assert {_, ^cs} = checksum(<<1::size(ent)>>)
   end
-
 
   describe "Bits" do
     test "chunks" do
