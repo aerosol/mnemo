@@ -1,8 +1,9 @@
 defmodule Mnemo do
   @valid_strenghts [128, 160, 192, 224, 256]
+  @default_strength 256
   @valid_mnemonic_word_count [12, 15, 18, 21, 24]
 
-  def generate(strength \\ 128) when strength in @valid_strenghts do
+  def generate(strength \\ @default_strength) when strength in @valid_strenghts do
     strength
     |> div(8)
     |> :crypto.strong_rand_bytes()

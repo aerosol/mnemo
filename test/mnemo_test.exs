@@ -15,18 +15,20 @@ defmodule MnemoTest do
   end
 
   test "generate/1" do
-    assert generate() |> String.split(" ") |> length == 12
+    assert generate(128) |> String.split(" ") |> length == 12
     assert generate(160) |> String.split(" ") |> length == 15
     assert generate(192) |> String.split(" ") |> length == 18
     assert generate(224) |> String.split(" ") |> length == 21
     assert generate(256) |> String.split(" ") |> length == 24
+
+    assert generate() |> String.split(" ") |> length == 24
   end
 
   describe "Entropy" do
     for i <- 1..100 do
       test "proptest: entropy/1 (attempt #{i})" do
         mnemonic =
-          [128, 160, 192, 224, 256] 
+          [128, 160, 192, 224, 256]
           |> Enum.random()
           |> generate()
 
@@ -50,7 +52,8 @@ defmodule MnemoTest do
     end
 
     test "Valid mnemonic" do
-      mnemonic = "about depth island gap total vital feed sand shuffle type nominee space endless high lonely motion problem project insect gentle hurdle web scene dad"
+      mnemonic =
+        "about depth island gap total vital feed sand shuffle type nominee space endless high lonely motion problem project insect gentle hurdle web scene dad"
 
       assert entropy(mnemonic)
     end
@@ -94,25 +97,25 @@ defmodule MnemoTest do
       assert length(sentence(<<1::size(ent_cs)>>)) == ms
     end
 
-    defp assert_cs(ent, cs), do: assert {_, ^cs} = checksum(<<1::size(ent)>>)
+    defp assert_cs(ent, cs), do: assert({_, ^cs} = checksum(<<1::size(ent)>>))
   end
 
   describe "Bits" do
     test "chunks" do
       assert [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        3
-      ] = bit_chunk(<<0::128, 3::4>>, 11)
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               0,
+               3
+             ] = bit_chunk(<<0::128, 3::4>>, 11)
     end
 
     test "pad_leading_zeros/1" do
