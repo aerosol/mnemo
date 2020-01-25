@@ -1,4 +1,11 @@
 defmodule Mnemo do
+  def generate(strength \\ 128) when strength in [128, 160, 192, 224, 256] do
+    strength
+    |> div(8)
+    |> :crypto.strong_rand_bytes()
+    |> mnemonic()
+  end
+
   def mnemonic(entropy) do
     entropy
     |> decode()
@@ -9,7 +16,12 @@ defmodule Mnemo do
     |> Enum.join(" ")
   end
 
-  def decode(ent), do: Base.decode16!(ent, case: :mixed)
+  def decode(ent) do
+    case Base.decode16(ent, case: :mixed) do
+      :error -> ent
+      {:ok, decoded} -> decoded
+    end
+  end
 
   def assert_size(ent) when bit_size(ent) >= 128 and bit_size(ent) <= 256, do: ent
   def assert_size(_ent), do: raise("ENT must be 128-256 bits")

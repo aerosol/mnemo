@@ -14,6 +14,14 @@ defmodule MnemoTest do
     end
   end
 
+  test "generate/1" do
+    assert generate() |> String.split(" ") |> length == 12
+    assert generate(160) |> String.split(" ") |> length == 15
+    assert generate(192) |> String.split(" ") |> length == 18
+    assert generate(224) |> String.split(" ") |> length == 21
+    assert generate(256) |> String.split(" ") |> length == 24
+  end
+
   describe "Words" do
     test "English words can be retrieved by index" do
       assert word(0) == "abandon"
