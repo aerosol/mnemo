@@ -1,0 +1,5 @@
+%{
+  "binpp": {:hex, :binpp, "1.1.1", "a01060124841ed3a22ed98ddeafc10d14166d2991683d5ce907a3a410559c9ee", [:rebar3], [], "hexpm"},
+  "jason": {:hex, :jason, "1.1.2", "b03dedea67a99223a2eaf9f1264ce37154564de899fd3d8b9a21b1a6fd64afe7", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
+  "python_mnemonic": {:git, "https://github.com/trezor/python-mnemonic.git", "eb8a010da91fefac2d43cb8ede834ed90b62601f", []},
+}
