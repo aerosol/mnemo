@@ -112,7 +112,7 @@ defmodule MnemoTest do
         0,
         0,
         3
-      ] = chunks(<<0::128, 3::4>>, 11)
+      ] = bit_chunk(<<0::128, 3::4>>, 11)
     end
 
     test "pad_leading_zeros/1" do

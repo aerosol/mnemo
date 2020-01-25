@@ -59,11 +59,7 @@ defmodule Mnemo do
     <<ent::binary, checksum::size(checksum_size)>>
   end
 
-  def sentence(ent_cs), do: chunks(ent_cs, 11)
-
-  def chunks(binary, n) do
-    do_chunks(binary, n, [])
-  end
+  def sentence(ent_cs), do: bit_chunk(ent_cs, 11)
 
   def decode_integer(b) when is_bitstring(b) do
     b
@@ -96,7 +92,7 @@ defmodule Mnemo do
 
   def checksum(ent) do
     s = div(bit_size(ent), 32)
-    {part(:crypto.hash(:sha256, ent), s), s}
+    {bit_slice(:crypto.hash(:sha256, ent), s), s}
   end
 
   def pad_leading_zeros(bs) when is_binary(bs), do: bs
@@ -106,16 +102,20 @@ defmodule Mnemo do
     <<0::size(pad_length), bs::bitstring>>
   end
 
-  defp do_chunks(binary, n, acc) when bit_size(binary) <= n do
-    Enum.reverse([decode_integer(<<binary::bitstring>>) | acc])
+  def bit_chunk(b, n) when is_bitstring(b) and is_integer(n) and n > 1 do
+    bit_chunk(b, n, [])
   end
 
-  defp do_chunks(binary, n, acc) do
-    <<chunk::size(n), rest::bitstring>> = binary
-    do_chunks(rest, n, [decode_integer(<<chunk::size(n)>>) | acc])
+  defp bit_chunk(b, n, acc) when bit_size(b) <= n do
+    Enum.reverse([decode_integer(<<b::bitstring>>) | acc])
   end
 
-  defp part(bin, n) do
+  defp bit_chunk(b, n, acc) do
+    <<chunk::size(n), rest::bitstring>> = b
+    bit_chunk(rest, n, [decode_integer(<<chunk::size(n)>>) | acc])
+  end
+
+  defp bit_slice(bin, n) do
     <<x::integer-size(n), _t::bitstring>> = bin
     x
   end
