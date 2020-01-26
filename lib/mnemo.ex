@@ -1,9 +1,17 @@
 defmodule Mnemo do
+  @moduledoc """
+  Implementation of [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+  """
+
   @valid_strenghts [128, 160, 192, 224, 256]
   @default_strength 256
   @valid_mnemonic_word_count [12, 15, 18, 21, 24]
   @pbkdf2_opts rounds: 2048, digest: :sha512, length: 64, format: :hex
 
+  @doc """
+  Generates random English mnemonic.
+  Optional entropy length (`strength`) argument can be provided; defaults to 256 bits.
+  """
   def generate(strength \\ @default_strength) when strength in @valid_strenghts do
     strength
     |> div(8)
@@ -11,6 +19,9 @@ defmodule Mnemo do
     |> mnemonic()
   end
 
+  @doc """
+  Generates English mnemonic for pre-existing entropy (obtained from elsehwere).
+  """
   def mnemonic(entropy) do
     entropy
     |> maybe_decode()
@@ -20,6 +31,11 @@ defmodule Mnemo do
     |> Enum.join(" ")
   end
 
+  @doc """
+  Converts English mnemonic to its binary entropy.
+  Validates the provided number of words, their existence in English wordlist 
+  and finally, the checksum.
+  """
   def entropy(mnemonic) do
     words = String.split(mnemonic)
 
@@ -45,6 +61,10 @@ defmodule Mnemo do
     end
   end
 
+  @doc """
+  Retrieves English word by index.
+  Non-English wordlists are not implemented yet.
+  """
   def word(i, lang \\ :english) when i in 0..2047 do
     lang
     |> wordlist_stream()
@@ -54,6 +74,10 @@ defmodule Mnemo do
     |> String.trim()
   end
 
+  @doc """
+  Retrieves index for an English word.
+  Non-English wordlists are not implemented yet.
+  """
   def index(word, lang \\ :english) when is_binary(word) do
     fetch = fn
       [] -> raise "Invalid word: #{word}"
@@ -68,12 +92,24 @@ defmodule Mnemo do
     |> fetch.()
   end
 
-  def sentence(ent_cs), do: bit_chunk(ent_cs, 11)
+  @doc """
+  Derives a hex-encoded PBKDF2 seed from mnemonic. 
+  Optional passhprase can be provided in the second argument.
 
+  Does not validate any mnemonic properties.
+  """
   def seed(mnemonic, passphrase \\ "") do
     Pbkdf2.Base.hash_password(mnemonic, "mnemonic#{passphrase}", @pbkdf2_opts)
   end
 
+  @doc """
+  Returns a list of 11-bit word indices for given ENT_CS.
+  """
+  def sentence(ent_cs), do: bit_chunk(ent_cs, 11)
+
+  @doc """
+  Decodes unsigned integer from a binary. Bitstrings are left-padded.
+  """
   def decode_integer(b) when is_bitstring(b) do
     b
     |> pad_leading_zeros()
