@@ -1,5 +1,8 @@
 # Mnemo
 
+![](https://github.com/aerosol/mnemo/workflows/Elixir%20CI/badge.svg)
+[![Hex.pm](https://img.shields.io/hexpm/v/mnemo.svg)](https://hex.pm/packages/mnemo)
+
 Elixir implementation of [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki).
 
 > (...) implementation of a mnemonic code or mnemonic sentence -- a group of easy to remember words -- for the generation of deterministic wallets.
