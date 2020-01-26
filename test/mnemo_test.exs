@@ -51,6 +51,16 @@ defmodule MnemoTest do
       end
     end
 
+    test "Invalid word (not in wordlist)" do
+      assert_raise RuntimeError, "Invalid word: howaboutno", fn ->
+        1..23
+        |> Enum.map(fn _ -> "about" end)
+        |> Enum.concat(["howaboutno"])
+        |> Enum.join(" ")
+        |> entropy()
+      end
+    end
+
     test "Valid mnemonic" do
       mnemonic =
         "about depth island gap total vital feed sand shuffle type nominee space endless high lonely motion problem project insect gentle hurdle web scene dad"
@@ -66,8 +76,8 @@ defmodule MnemoTest do
     end
 
     test "Index can be retrieved by English word" do
-      assert word_index("abandon") == 0
-      assert word_index("zoo") == 2047
+      assert index("abandon") == 0
+      assert index("zoo") == 2047
     end
   end
 

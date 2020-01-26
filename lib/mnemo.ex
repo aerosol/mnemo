@@ -26,7 +26,7 @@ defmodule Mnemo do
       raise "Number of words must be one of the following: [12, 15, 18, 21, 24]"
     end
 
-    sentence = for(word <- words, do: <<word_index(word)::size(11)>>, into: "")
+    sentence = for(word <- words, do: <<index(word)::size(11)>>, into: "")
     divider_index = floor(bit_size(sentence) / 33) * 32
     <<entropy::size(divider_index), checksum::bitstring>> = sentence
 
@@ -77,12 +77,18 @@ defmodule Mnemo do
     |> String.trim()
   end
 
-  def word_index(word, lang \\ :english) when is_binary(word) do
+  def index(word, lang \\ :english) when is_binary(word) do
+    fetch = fn
+      [] -> raise "Invalid word: #{word}"
+      [{_word, index}] -> index
+    end
+
     lang
     |> wordlist_stream()
     |> Stream.filter(fn {value, _index} -> String.trim(value) == word end)
-    |> Enum.at(0)
-    |> elem(1)
+    |> Stream.take(1)
+    |> Enum.to_list()
+    |> fetch.()
   end
 
   defp wordlist_stream(lang) do
