@@ -33,7 +33,7 @@ defmodule Mnemo do
 
   @doc """
   Converts English mnemonic to its binary entropy.
-  Validates the provided number of words, their existence in English wordlist 
+  Validates the provided number of words, their existence in English wordlist
   and finally, the checksum.
   """
   def entropy(mnemonic) do
@@ -93,7 +93,7 @@ defmodule Mnemo do
   end
 
   @doc """
-  Derives a hex-encoded PBKDF2 seed from mnemonic. 
+  Derives a hex-encoded PBKDF2 seed from mnemonic.
   Optional passhprase can be provided in the second argument.
 
   Does not validate any mnemonic properties.
@@ -116,17 +116,18 @@ defmodule Mnemo do
     |> :binary.decode_unsigned(:big)
   end
 
-  defp wordlist_stream(lang) do
-    "priv/#{lang}.txt"
-    |> File.stream!()
-    |> Stream.with_index()
-  end
-
+  @doc """
+  Calculates CS for given ENT.
+  Returns a tuple consisting of the checksum and its bit size.
+  """
   def checksum(ent) do
     s = div(bit_size(ent), 32)
     {bit_slice(:crypto.hash(:sha256, ent), s), s}
   end
 
+  @doc """
+  Left pads a bitstring with zeros.
+  """
   def pad_leading_zeros(bs) when is_binary(bs), do: bs
 
   def pad_leading_zeros(bs) when is_bitstring(bs) do
@@ -134,6 +135,9 @@ defmodule Mnemo do
     <<0::size(pad_length), bs::bitstring>>
   end
 
+  @doc """
+  Splits bitstring `b` into `n`-bit chunks.
+  """
   def bit_chunk(b, n) when is_bitstring(b) and is_integer(n) and n > 1 do
     bit_chunk(b, n, [])
   end
@@ -166,5 +170,11 @@ defmodule Mnemo do
   defp update_with_checksum(ent) do
     {checksum, checksum_size} = checksum(ent)
     <<ent::binary, checksum::size(checksum_size)>>
+  end
+
+  defp wordlist_stream(lang) do
+    "priv/#{lang}.txt"
+    |> File.stream!()
+    |> Stream.with_index()
   end
 end
