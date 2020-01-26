@@ -48,5 +48,8 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
+## Documentation
+
+Documentation can be generated locally with [ExDoc](https://github.com/elixir-lang/ex_doc).
+
 The docs can be found at [https://hexdocs.pm/mnemo](https://hexdocs.pm/mnemo).
