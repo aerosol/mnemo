@@ -44,11 +44,6 @@ defmodule Mnemo do
     end
   end
 
-  def update_with_checksum(ent) do
-    {checksum, checksum_size} = checksum(ent)
-    <<ent::binary, checksum::size(checksum_size)>>
-  end
-
   def word(i, lang \\ :english) when i in 0..2047 do
     lang
     |> wordlist_stream()
@@ -125,5 +120,10 @@ defmodule Mnemo do
 
     bit_size(ent) in @valid_strenghts || raise "ENT must be #{inspect(@valid_strenghts)} bits"
     ent
+  end
+
+  defp update_with_checksum(ent) do
+    {checksum, checksum_size} = checksum(ent)
+    <<ent::binary, checksum::size(checksum_size)>>
   end
 end
