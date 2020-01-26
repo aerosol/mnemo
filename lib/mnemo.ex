@@ -44,28 +44,9 @@ defmodule Mnemo do
     end
   end
 
-  def maybe_decode(ent) do
-    ent =
-      case Base.decode16(ent, case: :mixed) do
-        :error -> ent
-        {:ok, decoded} -> decoded
-      end
-
-    bit_size(ent) in @valid_strenghts || raise "ENT must be #{inspect(@valid_strenghts)} bits"
-    ent
-  end
-
   def update_with_checksum(ent) do
     {checksum, checksum_size} = checksum(ent)
     <<ent::binary, checksum::size(checksum_size)>>
-  end
-
-  def sentence(ent_cs), do: bit_chunk(ent_cs, 11)
-
-  def decode_integer(b) when is_bitstring(b) do
-    b
-    |> pad_leading_zeros()
-    |> :binary.decode_unsigned(:big)
   end
 
   def word(i, lang \\ :english) when i in 0..2047 do
@@ -89,6 +70,14 @@ defmodule Mnemo do
     |> Stream.take(1)
     |> Enum.to_list()
     |> fetch.()
+  end
+
+  def sentence(ent_cs), do: bit_chunk(ent_cs, 11)
+
+  def decode_integer(b) when is_bitstring(b) do
+    b
+    |> pad_leading_zeros()
+    |> :binary.decode_unsigned(:big)
   end
 
   defp wordlist_stream(lang) do
@@ -125,5 +114,16 @@ defmodule Mnemo do
   defp bit_slice(bin, n) do
     <<x::integer-size(n), _t::bitstring>> = bin
     x
+  end
+
+  defp maybe_decode(ent) do
+    ent =
+      case Base.decode16(ent, case: :mixed) do
+        :error -> ent
+        {:ok, decoded} -> decoded
+      end
+
+    bit_size(ent) in @valid_strenghts || raise "ENT must be #{inspect(@valid_strenghts)} bits"
+    ent
   end
 end
