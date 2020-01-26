@@ -1,5 +1,7 @@
 %{
   "binpp": {:hex, :binpp, "1.1.1", "a01060124841ed3a22ed98ddeafc10d14166d2991683d5ce907a3a410559c9ee", [:rebar3], [], "hexpm"},
+  "comeonin": {:hex, :comeonin, "5.2.0", "d0277415a4b887f7a5f418be78776e5dacf1b005105913f075d301c0da3b5311", [:mix], [], "hexpm"},
   "jason": {:hex, :jason, "1.1.2", "b03dedea67a99223a2eaf9f1264ce37154564de899fd3d8b9a21b1a6fd64afe7", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm"},
+  "pbkdf2_elixir": {:hex, :pbkdf2_elixir, "1.1.0", "21b3bdd7e6dfe605fe07edb4d17152473b2ffc0e0c8c7e0830726cee02ac2b1c", [:mix], [{:comeonin, "~> 5.2", [hex: :comeonin, repo: "hexpm", optional: false]}], "hexpm"},
   "python_mnemonic": {:git, "https://github.com/trezor/python-mnemonic.git", "eb8a010da91fefac2d43cb8ede834ed90b62601f", []},
 }

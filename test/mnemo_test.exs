@@ -5,11 +5,13 @@ defmodule MnemoTest do
   import Mnemo
 
   @vectors File.read!("priv/vectors.json") |> Jason.decode!() |> Map.fetch!("english")
+  @passphrase "TREZOR"
 
   test "Vectors" do
-    for [entropy, mnemonic | _] <- @vectors do
+    for [entropy, mnemonic, seed, _] <- @vectors do
       IO.write(IO.ANSI.reset() <> "Vector: #{entropy}")
       assert mnemonic(entropy) == mnemonic
+      assert seed(mnemonic, @passphrase) == seed
       IO.write(IO.ANSI.green() <> " ...OK\n")
     end
   end
