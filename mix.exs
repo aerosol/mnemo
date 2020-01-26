@@ -1,28 +1,46 @@
 defmodule Mnemo.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+
   def project do
     [
       app: :mnemo,
-      version: "0.1.0",
+      deps: deps(),
+      description: "BIP39 Mnemonics",
+      docs: [
+        source_ref: "#{@version}",
+        source_url: "https://github.com/aerosol/mnemo",
+        main: "readme",
+        extras: ["README.md"]
+      ],
       elixir: "~> 1.8",
+      package: package(),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      version: @version
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:jason, "~> 1.1"},
-      {:pbkdf2_elixir, "~> 1.1"}
+      {:pbkdf2_elixir, "~> 1.1"},
+      {:earmark, "~> 1.2", only: :dev},
+      {:ex_doc, "~> 0.16", only: :dev}
+    ]
+  end
+
+  defp package do
+    [
+      maintainers: ["Adam Rutkowski"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/aerosol/mnemo"}
     ]
   end
 end
