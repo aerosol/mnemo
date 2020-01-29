@@ -24,18 +24,20 @@ iex(1)> Mnemo.generate
 ```
 
 ```
-iex(2)> Mnemo.entropy "insect miracle play mad cream upgrade engage march absorb pyramid december observe jazz senior betray family valve peasant cargo marriage table laundry melody morning"
-<<117, 17, 174, 153, 66, 211, 47, 221, 82, 148, 62, 0, 213, 224, 226, 204, 55,
-  119, 135, 69, 90, 148, 241, 20, 68, 138, 196, 45, 206, 251, 98, 164>>
+iex(1)> mnemonic = "insect miracle play mad cream upgrade engage march absorb pyramid december observe jazz senior
+ betray family valve peasant cargo marriage table laundry melody morning"
+"insect miracle play mad cream upgrade engage march absorb pyramid december observe jazz senior betray family valve peasant cargo marriage table laundry melody morning"
+iex(2)> Mnemo.entropy(mnemonic, hex: true)
+"7511ae9942d32fdd52943e00d5e0e2cc377787455a94f114448ac42dcefb62a4"
 ```
 
 ```
-iex(3)> Mnemo.mnemonic :crypto.strong_rand_bytes(16)
+iex(1)> Mnemo.mnemonic :crypto.strong_rand_bytes(16)
 "emotion enroll aspect taxi nerve warrior become lens cactus stand stage pretty"
 ```
 
 ```
-iex(4)> Mnemo.generate |> Mnemo.seed
+iex(1)> Mnemo.generate |> Mnemo.seed
 "18a644cfd59eb0b509b0a73639b01e836e9e5a09f1f473a7f1b967acebc1908a9c8afe4ad8fabe7928d11ea422ffabec42db07ca7085131196b7d3fb6a1d9bc4"
 ```
 
