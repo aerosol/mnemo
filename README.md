@@ -26,7 +26,6 @@ iex(1)> Mnemo.generate
 ```
 iex(1)> mnemonic = "insect miracle play mad cream upgrade engage march absorb pyramid december observe jazz senior
  betray family valve peasant cargo marriage table laundry melody morning"
-"insect miracle play mad cream upgrade engage march absorb pyramid december observe jazz senior betray family valve peasant cargo marriage table laundry melody morning"
 iex(2)> Mnemo.entropy(mnemonic, hex: true)
 "7511ae9942d32fdd52943e00d5e0e2cc377787455a94f114448ac42dcefb62a4"
 ```
