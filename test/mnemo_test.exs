@@ -38,6 +38,12 @@ defmodule MnemoTest do
       end
     end
 
+    test "as hex" do
+      hex_entropy = generate(128) |> entropy(hex: true)
+      assert bit_size(hex_entropy) == 256
+      assert Base.decode16!(hex_entropy, case: :lower)
+    end
+
     test "Invalid number of words mnemonic" do
       assert_raise RuntimeError, ~r"Number of words", fn ->
         entropy("about about about")

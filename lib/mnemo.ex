@@ -35,8 +35,10 @@ defmodule Mnemo do
   Converts English mnemonic to its binary entropy.
   Validates the provided number of words, their existence in English wordlist
   and finally, the checksum.
+
+  If `hex: true` option is provided, the result is hex-encoded.
   """
-  def entropy(mnemonic) do
+  def entropy(mnemonic, opts \\ []) do
     words = String.split(mnemonic)
 
     if length(words) not in @valid_mnemonic_word_count do
@@ -50,9 +52,11 @@ defmodule Mnemo do
     ent = <<entropy::size(divider_index)>>
     cs = decode_integer(checksum)
 
+    as_hex? = Keyword.get(opts, :hex, false)
+
     case checksum(ent) do
       {^cs, _} ->
-        ent
+        if as_hex?, do: Base.encode16(ent, case: :lower), else: ent
 
       {other, _} ->
         raise "Invalid mnemonic (checksum mismatch): #{inspect(mnemonic)}. Got #{other}, expected: #{
