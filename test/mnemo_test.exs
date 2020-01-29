@@ -39,7 +39,7 @@ defmodule MnemoTest do
     end
 
     test "as hex" do
-      hex_entropy = generate(128) |> entropy(hex: true)
+      hex_entropy = 128 |> generate() |> entropy(hex: true)
       assert bit_size(hex_entropy) == 256
       assert Base.decode16!(hex_entropy, case: :lower)
     end
