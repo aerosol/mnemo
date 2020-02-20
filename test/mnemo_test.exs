@@ -16,6 +16,10 @@ defmodule MnemoTest do
     end
   end
 
+  test "seed/1" do
+    assert seed(generate(128))
+  end
+
   test "generate/1" do
     assert generate(128) |> String.split(" ") |> length == 12
     assert generate(160) |> String.split(" ") |> length == 15
