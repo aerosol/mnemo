@@ -29,10 +29,11 @@ defmodule Mnemo.MixProject do
 
   defp deps do
     [
-      {:jason, "~> 1.1"},
-      {:pbkdf2_elixir, "~> 1.1"},
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
       {:earmark, "~> 1.2", only: :dev},
-      {:ex_doc, "~> 0.16", only: :dev}
+      {:ex_doc, "~> 0.16", only: :dev},
+      {:jason, "~> 1.1"},
+      {:pbkdf2_elixir, "~> 1.1"}
     ]
   end
 
