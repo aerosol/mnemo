@@ -177,7 +177,9 @@ defmodule Mnemo do
   end
 
   defp wordlist_stream(lang) do
-    "priv/#{lang}.txt"
+    :mnemo
+    |> Application.app_dir()
+    |> Path.join("priv/#{lang}.txt")
     |> File.stream!()
     |> Stream.with_index()
   end
