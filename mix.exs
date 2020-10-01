@@ -2,18 +2,14 @@ defmodule Mnemo.MixProject do
   use Mix.Project
 
   @version "0.1.2"
+  @source_url "https://github.com/aerosol/mnemo"
 
   def project do
     [
       app: :mnemo,
       deps: deps(),
       description: "BIP39 Mnemonics",
-      docs: [
-        source_ref: "#{@version}",
-        source_url: "https://github.com/aerosol/mnemo",
-        main: "readme",
-        extras: ["README.md"]
-      ],
+      docs: docs(),
       elixir: "~> 1.8",
       package: package(),
       start_permanent: Mix.env() == :prod,
@@ -37,11 +33,20 @@ defmodule Mnemo.MixProject do
     ]
   end
 
+  defp docs do
+    [
+      source_ref: "#{@version}",
+      source_url: @source_url,
+      main: "readme",
+      extras: ["README.md"]
+    ]
+  end
+
   defp package do
     [
       maintainers: ["Adam Rutkowski"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/aerosol/mnemo"}
+      links: %{"GitHub" => @source_url}
     ]
   end
 end
